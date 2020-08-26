@@ -1,1 +1,78 @@
-
+swagger: '2.0'
+info:
+  version: v01
+  title: callPDFReport
+  description: Esta é a API de exemplo padrão para demonstrar em .Net como produzir um PDF e gerar os dados de campos vindos dos mais diversos locais.
+paths:
+  /callPDFReport:
+    get:
+      produces:
+        - application/pdf
+      parameters:
+        - name: url
+          in: query
+          required: false
+          type: string
+      responses:
+        '500':
+          description: Faults
+          schema:
+            $ref: '#/definitions/APIInvocationError'
+        default:
+          description: Este serviço renderiza um report com os campos Nome, Lista, SKU e Preço
+          schema:
+            $ref: '#/definitions/streamReference'
+      security:
+        - oauth2Authentication: []
+securityDefinitions:
+  oauth2Authentication:
+    type: oauth2
+    authorizationUrl: >-
+      https://idcs-1456e3ed37c04e009008768dd42bdf9a.identity.oraclecloud.com:443/oauth2/v1/authorize
+    tokenUrl: >-
+      https://idcs-1456e3ed37c04e009008768dd42bdf9a.identity.oraclecloud.com:443/oauth2/v1/token
+    flow: accessCode
+    scopes:
+      'PUBLICAPIcallPDFAPICatalogue': all
+definitions:
+  streamReference:
+    type: string
+  APIInvocationError:
+    type: object
+    required:
+      - detail
+      - errorCode
+      - errorDetails
+      - title
+      - type
+    properties:
+      type:
+        type: string
+      title:
+        type: string
+      detail:
+        type: string
+      errorCode:
+        type: string
+      errorDetails:
+        type: array
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+            instance:
+              type: string
+            title:
+              type: string
+            errorPath:
+              type: string
+            errorCode:
+              type: string
+          required:
+            - errorCode
+            - errorPath
+            - instance
+            - title
+            - type
+        minItems: 1
